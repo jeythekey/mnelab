@@ -66,6 +66,7 @@ _DEFAULTS = {
     "scalings": "auto",
     "toolbar_actions": [
         "open_file",
+        "open_folder",
         "---",
         "chan_props",
         "---",
@@ -400,7 +401,8 @@ class SettingsDialog(QDialog):
         highlight = p.color(QPalette.ColorRole.Highlight).name()
         highlighted_text = p.color(QPalette.ColorRole.HighlightedText).name()
         midlight = p.color(QPalette.ColorRole.Midlight).name()
-        self._sidebar.setStyleSheet(f"""
+        self._sidebar.setStyleSheet(
+            f"""
             QListWidget {{
                 background: {base};
                 border-radius: 6px;
@@ -419,7 +421,8 @@ class SettingsDialog(QDialog):
             QListWidget::item:hover:!selected {{
                 background: {midlight};
             }}
-        """)
+        """
+        )
         self._sidebar.item(0).setIcon(QIcon.fromTheme("settings-general"))
         self._sidebar.item(1).setIcon(QIcon.fromTheme("settings-plotting"))
         self._sidebar.item(2).setIcon(QIcon.fromTheme("settings-toolbar"))

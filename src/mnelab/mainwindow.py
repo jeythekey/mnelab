@@ -156,6 +156,12 @@ class MainWindow(QMainWindow):
             self.open_data,
             QKeySequence.StandardKey.Open,
         )
+        self.all_actions["open_folder"] = file_menu.addAction(
+            QIcon.fromTheme("open-folder"),
+            "Open &Folder...",
+            self.open_folder,
+            QKeySequence("Ctrl+Shift+O"),
+        )
         self.recent_menu = file_menu.addMenu(
             QIcon.fromTheme("open-recent"), "Open Recent"
         )
@@ -463,6 +469,7 @@ class MainWindow(QMainWindow):
         # actions that are always enabled
         self.always_enabled = [
             "open_file",
+            "open_folder",
             "about",
             "about_qt",
             "check_updates",
@@ -510,7 +517,8 @@ class MainWindow(QMainWindow):
             self.all_actions["menubar"].setChecked(not hamburger_enabled)
         self.setUnifiedTitleAndToolBarOnMac(True)
         if sys.platform == "darwin":
-            self.toolbar.setStyleSheet("""
+            self.toolbar.setStyleSheet(
+                """
                 QToolButton:hover {
                     background: rgba(128, 128, 128, 0.2);
                     border-radius: 4px;
@@ -519,7 +527,8 @@ class MainWindow(QMainWindow):
                     background: rgba(128, 128, 128, 0.35);
                     border-radius: 4px;
                 }
-            """)
+            """
+            )
         self.toolbar.show()
 
         # set up data model for sidebar (list of open files)
@@ -544,7 +553,9 @@ class MainWindow(QMainWindow):
         self.infowidget.widget(0).montage_clicked.connect(self.set_montage)
         self.infowidget.widget(0).reference_clicked.connect(self.change_reference)
         emptywidget = EmptyWidget(
-            itemgetter("open_file", "history", "settings")(self.all_actions)
+            itemgetter("open_file", "open_folder", "history", "settings")(
+                self.all_actions
+            )
         )
         self.infowidget.addWidget(emptywidget)
         self.splitter.addWidget(self.infowidget)
@@ -844,6 +855,13 @@ class MainWindow(QMainWindow):
         if fname:
             self._set_last_dir(fname)
             f(fname)
+
+    def open_folder(self, text="Open dataset"):
+        """Open a directory-based dataset."""
+        path = QFileDialog.getExistingDirectory(self, text, self._get_last_dir())
+        if path:
+            self._set_last_dir(path)
+            self.open_data(path)
 
     def xdf_chunks(self):
         """Inspect XDF chunks."""

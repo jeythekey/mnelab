@@ -7,7 +7,6 @@ import tempfile
 from collections import Counter, defaultdict
 from copy import deepcopy
 from functools import wraps
-from os.path import getsize
 from pathlib import Path
 
 import mne
@@ -214,8 +213,13 @@ class Model:
         name : str, optional
             Custom name for the dataset. If None, uses the filename.
         """
-        fname = str(Path(fname).resolve().as_posix())
-        fsize = getsize(fname) / 1024**2  # convert to MB
+        path = Path(fname).resolve()
+        fname = str(path.as_posix())
+        fsize = (
+            sum(p.stat().st_size for p in path.rglob("*") if p.is_file())
+            if path.is_dir()
+            else path.stat().st_size
+        ) / 1024**2  # convert to MB
         if name is None:
             name, ext = split_name_ext(fname, raw_readers)
         else:
