@@ -32,12 +32,6 @@ dependencies = [
     "scipy >= 1.17.1",
 ]
 
-[tool.uv.sources]
-mnextend = { path = "../mnextend", editable = true }
-# -> uv sync
-# mnextend = { git = "https://github.com/jeythekey/mnextend.git", branch = "feat_CTF-support" }
-# -> uv sync --refresh
-
 [project.optional-dependencies]
 full = [
     "autoreject >= 0.4.3",  # automatic artifact rejection
