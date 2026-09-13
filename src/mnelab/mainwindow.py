@@ -289,13 +289,19 @@ class MainWindow(QMainWindow):
             QIcon.fromTheme("import"),
             "Import Events...",
             lambda: self.import_file(
-                model.import_events, "Import events", "*.csv *.fif"
+                model.import_events,
+                "Import events",
+                "*.csv *.fif *.fif.gz *.eve *.lst *.txt",
             ),
         )
         self.all_actions["export_events"] = events_menu.addAction(
             QIcon.fromTheme("export"),
             "Export &Events...",
-            lambda: self.export_file(model.export_events, "Export events", "*.csv"),
+            lambda: self.export_file(
+                model.export_events,
+                "Export events",
+                "*.csv *.fif *.fif.gz *.eve *.lst *.txt",
+            ),
         )
         events_menu.addSeparator()
         self.all_actions["find_events"] = events_menu.addAction(

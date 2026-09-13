@@ -385,15 +385,19 @@ class Model:
             f.write(",".join(self.current["data"].info["bads"]))
 
     def export_events(self, fname):
-        """Export events to a CSV file."""
-        np.savetxt(
-            fname,
-            self.current["events"][:, [0, 2]],
-            fmt="%d",
-            delimiter=",",
-            header="pos,type",
-            comments="",
-        )
+        """Export events to a CSV file or an events file supported by mne-python."""
+        if fname.lower().endswith(".csv"):
+            np.savetxt(
+                fname,
+                self.current["events"][:, [0, 2]],
+                fmt="%d",
+                delimiter=",",
+                header="pos,type",
+                comments="",
+            )
+        else:
+            mne.write_events(fname, self.current["events"], overwrite=True)
+            # ... and let mne-python handle the file-format warnings.
 
     def export_annotations(self, fname, types=None):
         """Export annotations to a CSV file.
@@ -456,7 +460,7 @@ class Model:
 
     @data_changed
     def import_events(self, fname):
-        """Import events from a CSV or FIF file."""
+        """Import events from a CSV file or an events file supported by mne-python."""
         if fname.lower().endswith(".csv"):
             pos, desc = [], []
             with open(fname) as f:
@@ -471,10 +475,9 @@ class Model:
                 events = np.vstack((self.current["events"], events))
                 events = np.unique(events, axis=0)
             self.current["events"] = events
-        elif fname.lower().endswith(".fif"):
-            self.current["events"] = mne.read_events(fname)
         else:
-            raise ValueError(f"Unsupported event file: {fname}")
+            self.current["events"] = mne.read_events(fname)
+            # Let mne-python handle the warnings; possible endings filtered in GUI.
         self.current["data"].events = self.current["events"]
         self.history.append(
             f"data.events = np.array({self.current['events'].tolist()}, dtype=int)"
