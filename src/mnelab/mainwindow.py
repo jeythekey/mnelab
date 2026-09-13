@@ -79,6 +79,7 @@ from mnelab.widgets import EmptyWidget, InfoWidget, SidebarWidget
 
 SIDEBAR_MIN_WIDTH = 150
 INFOWIDGET_MIN_WIDTH = 200
+EVENTS_IMPORT_FILTER = "*.csv *.fif *.fif.gz *.eve *.lst *.txt"
 
 
 class _MNELogHandler(logging.Handler):
@@ -291,7 +292,7 @@ class MainWindow(QMainWindow):
             lambda: self.import_file(
                 model.import_events,
                 "Import events",
-                "*.csv *.fif *.fif.gz *.eve *.lst *.txt",
+                EVENTS_IMPORT_FILTER,
             ),
         )
         self.all_actions["export_events"] = events_menu.addAction(
@@ -300,7 +301,7 @@ class MainWindow(QMainWindow):
             lambda: self.export_file(
                 model.export_events,
                 "Export events",
-                "*.csv *.fif *.fif.gz *.eve *.lst *.txt",
+                EVENTS_IMPORT_FILTER,
             ),
         )
         events_menu.addSeparator()
